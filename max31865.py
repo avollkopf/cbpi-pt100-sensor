@@ -34,13 +34,14 @@ class max31865(object):
 	   3rd and 4th degree parts of the polynomial) and the straight line approx.
 	   temperature is calculated with the quadratic formula one being the most accurate.
 	"""
-	def __init__(self, csPin, misoPin, mosiPin, clkPin, RefRest, ConfigReg):
+	def __init__(self, csPin, misoPin, mosiPin, clkPin, ResSens, RefRest, ConfigReg):
 		self.csPin = csPin
 		self.misoPin = misoPin
 		self.mosiPin = mosiPin
 		self.clkPin = clkPin
 		self.RefRest = RefRest
 		self.ConfigReg = ConfigReg
+		self.ResSens = ResSens
 		self.setupGPIO()
 		
 	def setupGPIO(self):
@@ -175,7 +176,7 @@ class max31865(object):
 	
 	def calcPT100Temp(self, RTD_ADC_Code):
 		R_REF = self.RefRest # Reference Resistor was 400.0
-		Res0 = 100; # Resistance at 0 degC for 400ohm R_Ref
+		Res0 = self.ResSens # Resistance at 0 degC for 400ohm R_Ref
 		a = .00390830
 		b = -.000000577500
 		# c = -4.18301e-12 # for -200 <= T <= 0 (degC)

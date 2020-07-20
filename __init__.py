@@ -1,14 +1,25 @@
 # -*- coding: utf-8 -*-
+import os, time, subprocess
 from modules import cbpi
 from modules.core.hardware import SensorPassive
 from modules.core.props import Property
 import max31865
 
+def ifelse_celcius(x, y):
+    if cbpi.get_config_parameter("unit", "C") == "C":
+        return x
+    else:
+        return y
+
 @cbpi.sensor
-class PT100(SensorPassive):
+class PT100X(SensorPassive):
     # CONFIG PARAMETER & PROPERTIES
     csPin  = Property.Select("csPin", options=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27], description="GPIO Pin connected to the CS Pin of the MAX31865 - For MISO, MOSI, CLK no choice by default it's PIN 9, 10, 11")
-    RefRest = Property.Number("Reference Resistor", configurable=True, description="Reference Resistor of the MAX31865 board (it's written on the resistor: 400 or 430,....)")
+    ResSens = Property.Select("Sensor Type", options=[100,1000],description="Select 100 for PT100 or 1000 for PT1000")
+    RefRest = Property.Number("Reference Resistor", configurable=True, description="Reference Resistor of the MAX31865 board (it's written on the resistor: 430 or 4300,....)")
+    offset = Property.Number("Offset", True, 0, description="Offset which is added to the received sensor data. Positive and negative values are both allowed.")
+    ignore_below = Property.Number(ifelse_celcius("Low value filter threshold (°C)", "Low value filter threshold (°F)"), True, ifelse_celcius(0,32), description="Readings below this value will be ignored")
+    ignore_above = Property.Number(ifelse_celcius("High value filter threshold (°C)", "High value filter threshold (°F)"), True,ifelse_celcius(100,212), description="Readings above this value will be ignored")
     misoPin = 9
     mosiPin = 10
     clkPin = 11
@@ -31,20 +42,31 @@ class PT100(SensorPassive):
 		# 0b11000010 = 0xC2     (Continuous auto conversion, 2 or 4 wires at 60 Hz) 
 		#
 
-      
 
     def init(self):
 
         # INIT SENSOR
         self.ConfigReg = self.ConfigText[1:5]
-        self.max = max31865.max31865(int(self.csPin),int(self.misoPin), int(self.mosiPin), int(self.clkPin), int(self.RefRest), int(self.ConfigReg,16))
+        self.max = max31865.max31865(int(self.csPin),int(self.misoPin), int(self.mosiPin), int(self.clkPin), int(self.ResSens), int(self.RefRest), int(self.ConfigReg,16))
 
+#        low_filter = float(self.ignore_below)
+#        high_filter = float(self.ignore_above)  
+
+    # READ SENSOR
     def read(self):
+        low_filter = float(self.ignore_below)
+        high_filter = float(self.ignore_above) 
+        value = self.max.readTemp()
 
-        # READ SENSOR
+        if value < low_filter or value > high_filter:
+            return
+
         if self.get_config_parameter("unit", "C") == "C":
-            self.data_received(round(self.max.readTemp(), 2))
+            self.data_received(round(value + self.offset_value(), 2))
         else:
-            self.data_received(round(9.0 / 5.0 * self.max.readTemp() + 32, 2))
+            self.data_received(round(9.0 / 5.0 * value + 32 + self.offset_value(), 2))
 
+    @cbpi.try_catch(0)
+    def offset_value(self):
+        return float(self.offset)
 
