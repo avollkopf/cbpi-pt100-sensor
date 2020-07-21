@@ -1,5 +1,5 @@
 # cbpi-pt100-sensor
-PT100 probes using a max31865 chip.  for wiring go to https://github.com/thegreathoe/cbpi-pt100-sensor/ updated 8/2/17
+PT100 / PT1000 probes using a max31865 chip.  for wiring go to https://github.com/thegreathoe/cbpi-pt100-sensor/ updated 8/2/17
 
 You may need to clear your browser cache if updating from a previous version!!!!!
 
@@ -21,6 +21,9 @@ The code for the request to the max chip is from https://github.com/steve71/MAX3
 
 Manuel neatened up my origional code and added the ability to select the cs pin.... so the rest of the credit goes there... I just kind of peieced it all together.
 
+7/20/20:: Added PT1000 functionality. This can be selected in the setup of the sensor. Added also parameters such as offset, low and high vaule filter that are comparable to the OneWireSensor plugins. PT1000 (2-wire) is for instance used in the Speidel Braumeister 20 / 50 and can be read out directly with this plugin. There is no need to change the sensor or the thermowell for these devices.
+
 8/2/17:: Pascal has been working on a pretty nice update which allows you to select the number of wires used on your probe in software... you still need to sever traces or solder jumpers on the board!  He has also been added as a contributer
 
 7/2/17:: Verified with Pascal Fouchy that it is working on multiple sensors at once, and i have added the ability to change the reference resistor value from the craftbeerpi hardware page
+
