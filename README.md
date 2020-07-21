@@ -1,6 +1,8 @@
 # cbpi-pt100-sensor
 PT100 / PT1000 probes using a max31865 chip.  for wiring go to https://github.com/thegreathoe/cbpi-pt100-sensor/ updated 8/2/17
 
+Changed Class from PT100 to PT100X -> an existing PT100 sensor might need to be set up again.
+
 You may need to clear your browser cache if updating from a previous version!!!!!
 
 You can now select the conversion mode and number of wires on your probe in software.  You will need to select a setting to get the probe working after an update.
