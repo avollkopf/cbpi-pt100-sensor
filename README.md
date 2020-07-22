@@ -1,7 +1,17 @@
 # cbpi-pt100-sensor
 PT100 / PT1000 probes using a max31865 chip.  for wiring go to https://github.com/thegreathoe/cbpi-pt100-sensor/ updated 8/2/17
 
-Changed Class from PT100 to PT100X -> an existing PT100 sensor might need to be set up again.
+IMPORTANT INFORMATION BEFORE YOU START:
+Changed Class from PT100 to PT100X -> an existing PT100 sensor might need to be set up again:
+
+Before starting new install, you need to remove or un-assign - all previous sensors with PT100 plugin.
+
+1) Remove original plugin pt100.
+2) install new plugin by cloning git:
+cd craftbeerpi3/modules/plugins/
+git clone https://github.com/avollkopf/cbpi-pt100-sensor
+3) reboot.
+4) configure sensors with new 100x.
 
 You may need to clear your browser cache if updating from a previous version!!!!!
 
