@@ -3,7 +3,7 @@ import os, time, subprocess
 from modules import cbpi
 from modules.core.hardware import SensorPassive
 from modules.core.props import Property
-import max31865
+from . import max31865
 
 def ifelse_celcius(x, y):
     if cbpi.get_config_parameter("unit", "C") == "C":
